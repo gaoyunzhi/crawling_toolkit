@@ -9,12 +9,12 @@ from sysPath import createPath,combinePath
 import urllib2,os,time,sys
 from toFname import toFname
 
-def getWebpage(link='', dataDir='webpages', timeSleep=0, 
-               cookies='', reLoad=False, debug=False, read=True):
+def getWebpage(link='', dataDir='../webpages', timeSleep=0, 
+               cookies='', reLoad=False, debug=False, read=True,referer='',info=''):
     link=link.strip()
     if link=='': return
     createPath(dataDir)
-    fname=combinePath(dataDir,toFname(cookies+link))
+    fname=combinePath(dataDir,toFname(cookies+link+info))
     if not reLoad:
         try:
             f=open(fname,'r')
@@ -25,14 +25,23 @@ def getWebpage(link='', dataDir='webpages', timeSleep=0,
         except:
             pass
     
-    if debug: print 'reading from web'        
+    if debug: print 'reading from web' 
+    time.sleep(timeSleep)       
     for i in range(10):
         try:
             page_info = urllib2.build_opener()
-            page_info.addheaders = [('User1', 'safari/536.25'),('Cookie', cookies)]
+            page_info.addheaders = [('User1', 'safari/536.25'),
+                                    ('Cookie', cookies),
+                                    ('Referer',referer)
+                                    ]
             page = page_info.open(link)
             if read: 
-                page=page.read()
+                try:
+                    page=page.read()
+                except:
+                    print 'error reading page, try again (until trying time reach 10)'
+                    print link
+                    continue
             break
         except (urllib2.HTTPError,urllib2.URLError), e:
             print e.code,

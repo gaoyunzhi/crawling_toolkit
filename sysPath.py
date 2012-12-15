@@ -20,6 +20,7 @@ def combinePath(x,y):
     if y[0]==systemSpliter():y=y[1:]
     return x+y
 
+    
 def createPath(path):
     path=sysPath(path)
     if path!='' and (not os.path.exists(path)):
@@ -39,6 +40,8 @@ def sysPath(path):
         path=path.replace('/ '[:1],'\ '[:1])
         
     return path
+
+
 
 def folderPath(path):
     path=path.strip()
@@ -69,14 +72,15 @@ def systemSpliter():
     else:
         return '\ '[:1]
     
-def createFile(path,debug=False):
+def createFile(path,debug=False,force=False):
     path=sysPath(path)
     ind=path.rfind(systemSpliter())
-    floder=path[:ind]
-    name=path[ind+1:]
-    createPath(floder)
+    if ind!=-1: 
+        floder=path[:ind]
+        createPath(floder)
+    name=path[ind+1:]    
     if os.path.exists(path):
-        return 'already exist'
+        if not force: return 'already exist'
     try:
         f=open(path,'w')
         f.close()
@@ -85,8 +89,14 @@ def createFile(path,debug=False):
         if debug:print 'create '+ path+' failed!'
         return 'failed'
     
-                  
+             
+def testCreateFile():
+    createFile('infos.txt')
+         
 if __name__=='__main__':
+    pass 
+    testCreateFile()
+    '''
     print 'change path according to the system\ndeal with windows and non-windows'
     print 'some tests, run on windows, still need some chance to run this on linux'
     testSysPath()
@@ -98,5 +108,7 @@ if __name__=='__main__':
     print systemSpliter()
     print 'testing createFile'
     createFile(u'莫阿a/喵.txt',debug=True)
+    '''
+    
     
     
