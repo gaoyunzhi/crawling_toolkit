@@ -24,7 +24,7 @@ count=0
 for id in ids[:]:
     timeSleep=1
     count+=1
-    print count
+    #print count
 
     mainInfo=getWebpage('http://www.renren.com/'+str(id)+
                     '/profile?v=info_ajax&undefined',
@@ -69,4 +69,5 @@ for id in ids[:]:
     g.write(','+name)
     g.write(',,,,,,,,,,,,,,,,,,,,,,,,,,,'+qq+',,'+msn+',,'+mobile+'\n')
     g.close()
+print 'over'
     
