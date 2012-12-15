@@ -10,7 +10,7 @@ import urllib2,os,time,sys
 from toFname import toFname
 
 def getWebpage(link='', dataDir='webpages', timeSleep=0, 
-               cookies='', reLoad=False, debug=False):
+               cookies='', reLoad=False, debug=False, read=True):
     link=link.strip()
     if link=='': return
     createPath(dataDir)
@@ -31,12 +31,14 @@ def getWebpage(link='', dataDir='webpages', timeSleep=0,
             page_info = urllib2.build_opener()
             page_info.addheaders = [('User1', 'safari/536.25'),('Cookie', cookies)]
             page = page_info.open(link)
-            page=page.read()
+            if read: 
+                page=page.read()
             break
         except (urllib2.HTTPError,urllib2.URLError), e:
             print e.code,
             page=''
         time.sleep(timeSleep)
+    if not read: return
     if page=='':
         print 'failed getWebpage', link 
         return
