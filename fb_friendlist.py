@@ -43,9 +43,17 @@ for f in jf['data']:
     if email[:7]=='profile':
         email=id+'@facebook.com'
     g=open('infos_fb.txt','a')
-    g.write(name)
-    g.write(','+name)
-    g.write(',,,,,,,,,,,,,,,,,,,,,,,,'+id+',,,'+email+',,'+''+',,'+''+'\n')
+    try:        
+        g.write(name)
+        g.write(','+name)
+        g.write(',,,,,,,,,,,,,,,,,,,,,,,,'+id+',,,'+email+',,'+''+',,'+''+'\n')
+    except:
+        try:
+            print 'failed something'
+            print name
+        except:
+            pass
+            
     g.close()
     
 
