@@ -5,8 +5,15 @@ currently saveing as the same as the last piece of the address, without extensio
 input: webpage link
 output: local fname
 '''
+def toASN(s):
+    ans=[]
+    for x in s:
+        if ord(x)<128:
+            ans.append(x)
+    return ''.join(ans)
 
 def toFname(link,hasHtml=True):
+    link=toASN(link)
     link=link.strip()
     dotInd=link.rfind('.')
     if dotInd!=-1 and dotInd+10>len(link):
@@ -16,6 +23,8 @@ def toFname(link,hasHtml=True):
         print link+' is not a valid web address'
         return None
     name=link.split('/')[-1]
+    name=toASN(name)
+    name=str(name)
     name=name.translate(None,' / ? < > \ : * | "')
     if len(name)>100:
         name=name.decode('utf8')[:100]

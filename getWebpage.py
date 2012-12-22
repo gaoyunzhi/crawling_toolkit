@@ -30,7 +30,7 @@ def getWebpage(link='', dataDir='webpages', timeSleep=0,
     for i in range(10):
         try:
             page_info = urllib2.build_opener()
-            page_info.addheaders = [('User1', 'safari/536.25'),
+            page_info.addheaders = [('User-Agent', 'safari/536.25'),
                                     ('Cookie', cookies),
                                     ('Referer',referer)
                                     ]
@@ -44,7 +44,10 @@ def getWebpage(link='', dataDir='webpages', timeSleep=0,
                     continue
             break
         except (urllib2.HTTPError,urllib2.URLError), e:
-            print e.code,
+            try:
+                print e.code,
+            except:
+                pass
             page=''
         time.sleep(timeSleep)
     if not read: return
