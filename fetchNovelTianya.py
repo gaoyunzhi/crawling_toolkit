@@ -12,6 +12,12 @@ import re
 
 def clean(s):
     return s.strip()
+
+def reply(s):
+    m=re.search('--------',s)
+    if m==None: 
+        return False
+    return True
     
 def fetch(head,nid):
     head+='-'+str(nid)
@@ -35,6 +41,7 @@ def fetch(head,nid):
         for post in posts:
             post='\n'.join(map(clean,post.findAll(text=True)))
             if len(post)<10: continue
+            if reply(post): continue
             ans.append(post)
     g=open(str(nid)+'.txt','w')
     g.write('\n'.join(ans))
@@ -89,7 +96,7 @@ def fetch(head,nid):
         
         
 def test():
-    fetch(head='http://www.tianyayidu.com/article',nid=482520)
+    fetch(head='http://www.tianyayidu.com/article-a',nid=684989)
     
 if __name__=='__main__':
     test()

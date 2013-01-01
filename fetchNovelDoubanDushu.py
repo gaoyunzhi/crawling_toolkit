@@ -1,6 +1,6 @@
 #coding: utf-8
 '''
-fetch novel from douban website
+fetch novel from douban reading website
 '''
 
 from getWebpage import getWebpage
@@ -25,8 +25,11 @@ def clean(s):
     return s.strip()
     
 def fetch(head):
-    prehead='http://book.douban.com/reading/' 
-    headP=getWebpage(head)
+    coo='bid="yrdz0J5ispI"; __gads=ID=720d3fea3d3fb612:T=1352676703:S=ALNI_MZ72ae6zGEgpSfYlI_B0WyhBlV-zA; ll="0"; viewed="2052978_11584608"; dbcl2="4898454:5qnPL5l4FFw"; ck="3bMe"; __utma=30149280.1032140921.1356576933.1356576933.1356614007.2; __utmc=30149280; __utmz=30149280.1356576933.1.1.utmcsr=douban.com|utmccn=(referral)|utmcmd=referral|utmcct=/; __utmv=30149280.489'
+    parts=head.split('/')
+    ref='/'.join(parts[:-3])
+    headP=getWebpage('http://read.douban.com/reader/',cookies='hst=1; '+coo, reLoad=True,referer=ref)
+    return
     soup=BeautifulSoup(headP.decode('utf8','ignore')) 
     t=soup.find('h1')
     title=t.find(text=True)
@@ -47,7 +50,7 @@ def fetch(head):
         
         
 def test():
-    fetch(head='http://book.douban.com/subject/20431965/reading')
+    fetch(head='http://read.douban.com/reader/ebook/450696/page/2/')
     
 if __name__=='__main__':
     test()
