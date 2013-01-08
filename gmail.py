@@ -3,6 +3,7 @@
 
 import smtplib
 import os
+from email.header import Header
 
 def happyNewYear(id,pd,lst,sub,content):
    
@@ -15,7 +16,7 @@ def happyNewYear(id,pd,lst,sub,content):
     for rec in lst:
         try:
             headers = ["from: " + id,
-               "subject: " + sub,
+               "subject: " + str(Header(sub, 'utf-8')),
                "to: " + rec,
                "mime-version: 1.0",
                "content-type: text/html"]
@@ -23,7 +24,8 @@ def happyNewYear(id,pd,lst,sub,content):
             msg=headers + "\r\n\r\n" +content
             mailServer.sendmail(id, rec, msg)
         except:
-            print rec+'\tfailed'
+            print rec,'failed'
+
     mailServer.close()
     
 f=open('emails.txt')
@@ -33,5 +35,7 @@ for line in f:
     if '@' in addr: receivers.append(addr)
 #receivers=[] #remove this
 f.close()
-happyNewYear(id='**', pd='**',lst=receivers,
-             sub=u'新年快乐',content=u'新年快乐！祝新的一年里身体健康，万事如意！'+'<br><br>'+u'**')
+happyNewYear(id='××', pd='××',lst=receivers,
+             sub=u'诚邀同游',
+             content=u'在下初拟定或在五月末，或在九月初，经由海南，至广东，福建，江浙，终于山东山西，历时一个到一个半月。诚邀同游，即可一路相伴，也可挑选几个景点共赏。具体是几月份出发，会在我intern的事情定下来以后决定，可能需要稍等一个月。有意请回复。'
+             +'<br><br>'+u'××')
