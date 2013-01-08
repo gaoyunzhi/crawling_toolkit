@@ -164,3 +164,4 @@ pip-log.txt
 
 # for web crawling project
 webpages/
+email*.txt
