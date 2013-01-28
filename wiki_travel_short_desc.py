@@ -18,31 +18,17 @@ def clean_t(s):
             s=s[:p]+s[q+2:]        
     return s
 def fetch():
-    res=c.execute("SELECT * FROM `location` LIMIT 30")
+    res=c.execute("SELECT * FROM `location` WHERE `latitude` IS NOT NULL AND `longitude` IS NOT NULL")
     n=res
     print n
     cities=c.fetchall()
     for city in cities:
-        if city["complete_descrip"].strip()!="": continue      
-        name=city["location_name"]
-        if name.strip()=="": continue
-        page=getWebpage('http://wikitravel.org/en/'+name)
-        soup=BeautifulSoup(page)
-        paras=[]
-        for x in soup.findAll('p'):        
-            paras.append(''.join(map(clean_t,x.findAll(text=True))))
-            paras=map(clean,paras)
-        paras=[x for x in paras if x!='']
-        paras.append('</a href="'+'http://wikitravel.org/en/'+name+'">From wiki travel<a>')
-        article='\n'.join(paras)
-        article=article.decode('ascii','ignore') 
-        article=MySQLdb.escape_string(article)
+        if city["short_descrip"].strip()!="": continue      
+        article=city["complete_descrip"]
         id=city["location_id"]
-        write_to_sql_item(id,article)
-        
-        
-        
-
+        ind=article[100:].find('.')
+        sd=article[:100+ind+1]
+        write_to_sql_item(id,MySQLdb.escape_string(sd))
 
                       
 def open_sql():
@@ -57,11 +43,10 @@ def open_sql():
                               db = dbname)
     c=connection.cursor(MySQLdb.cursors.DictCursor)
     
-def write_to_sql_item(num,article):    
-    c.execute(
-              "UPDATE `location` SET `complete_descrip` = '"+article+
+def write_to_sql_item(num,article):   
+    sql= "UPDATE `location` SET `short_descrip` = '"+article+\
               "' WHERE `location_id` = "+str(num)
-            )
+    c.execute(sql)
 
             
 

@@ -6,6 +6,11 @@ except:
     from bs4 import BeautifulSoup,SoupStrainer # beta version of bs
 import MySQLdb
 import sqlite3
+from googlemaps import GoogleMaps
+gmaps = GoogleMaps('api_key')
+
+
+
 N=1000
 def clean(s):
     s=s.replace(' '*2,' ')
@@ -18,27 +23,22 @@ def clean_t(s):
             s=s[:p]+s[q+2:]        
     return s
 def fetch():
-    res=c.execute("SELECT * FROM `location` LIMIT 30")
+    res=c.execute("SELECT * FROM `location`")
     n=res
-    print n
     cities=c.fetchall()
-    for city in cities:
-        if city["complete_descrip"].strip()!="": continue      
+    for city in cities:     
         name=city["location_name"]
-        if name.strip()=="": continue
-        page=getWebpage('http://wikitravel.org/en/'+name)
-        soup=BeautifulSoup(page)
-        paras=[]
-        for x in soup.findAll('p'):        
-            paras.append(''.join(map(clean_t,x.findAll(text=True))))
-            paras=map(clean,paras)
-        paras=[x for x in paras if x!='']
-        paras.append('</a href="'+'http://wikitravel.org/en/'+name+'">From wiki travel<a>')
-        article='\n'.join(paras)
-        article=article.decode('ascii','ignore') 
-        article=MySQLdb.escape_string(article)
         id=city["location_id"]
-        write_to_sql_item(id,article)
+        if name.strip()=="": continue
+        if city['latitude'] and city['longitude']: continue
+        
+        address = city["location_name"]+", UK"
+        
+        lat, lng = gmaps.address_to_latlng(address)
+        if 40<lat<60 and -10<lng<10:
+            write_to_sql_item(id,lat,lng)
+        else:
+            print id,name,lat,lng
         
         
         
@@ -57,10 +57,10 @@ def open_sql():
                               db = dbname)
     c=connection.cursor(MySQLdb.cursors.DictCursor)
     
-def write_to_sql_item(num,article):    
+def write_to_sql_item(num,lat,lng):    
     c.execute(
-              "UPDATE `location` SET `complete_descrip` = '"+article+
-              "' WHERE `location_id` = "+str(num)
+              "UPDATE `location` SET `latitude` = "+str(lat)+", `longitude`="+str(lng)+
+              " WHERE `location_id` = "+str(num)
             )
 
             
