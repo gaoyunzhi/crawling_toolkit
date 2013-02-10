@@ -18,7 +18,7 @@ def clean_t(s):
             s=s[:p]+s[q+2:]        
     return s
 def fetch():
-    res=c.execute("SELECT * FROM `location` WHERE `latitude` IS NOT NULL AND `longitude` IS NOT NULL")
+    res=c.execute("SELECT * FROM `location`")
     n=res
     print n
     cities=c.fetchall()

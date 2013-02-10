@@ -35,10 +35,10 @@ def get_reg_id(lst):
     if lst==sorted(["S","E",'I']): return 12
     if lst==sorted(["S","W",'I']): return 13
     if lst==sorted(["S","E",'I','W']): return 14
-    print "ERROR!!!"
+    print lst,"ERROR!!!"
     
 def fetch(): 
-    res=c.execute("SELECT * FROM `location` WHERE `latitude` IS NOT NULL AND `longitude` IS NOT NULL")
+    res=c.execute("SELECT * FROM `location` WHERE `latitude` IS NOT NULL AND `longitude` IS NOT NULL AND `location_id`>30" )
     n=res
     cities=c.fetchall()
     to_remove=[]
@@ -50,10 +50,9 @@ def fetch():
     for x in cities:
         x["location_name"]=x["location_name"].strip()
     n-=len(to_remove)    
-    for days in xrange(9,14):
-        count=1
-        if days==9: count=4
-        for i in xrange(10000):
+    for days in xrange(2,20):
+        count=1       
+        for i in xrange(100000):
             cs=sample(cities,days)
             des=0
             name=''
@@ -66,9 +65,9 @@ def fetch():
                 desc+=cs[i]["location_name"]+", "
                 regs.append(cs[i]["region"])
                 cts.append(cs[i]["location_id"])
-            if des>1.1*(days-1):continue
+            if des>sqrt(days)*(days-1)/3:continue
             name+=str(cs[days-1]['location_name'])+' '+str(days)+" day tour"
-            id=count+100*days+1000
+            id=count+10*days+7000
             desc+=cs[days-1]["location_name"]+\
                     ". Distance of travel: around "+str(des)+" miles."
             go=0
@@ -78,9 +77,9 @@ def fetch():
             cts.append(cs[days-1]["location_id"])
             write_to_sql_item(id=id,go=go,region=regs_id,name=name,
                               cities=cts,
-                              desc=desc,days=days)
+                              desc=desc,days=days,hp=1)
             count+=1
-            if count>10: break
+            if count>=10: break
 
 def open_sql():
     global c
@@ -94,12 +93,11 @@ def open_sql():
                               db = dbname)
     c=connection.cursor(MySQLdb.cursors.DictCursor)
     
-def write_to_sql_item(id=0,go=2,region=0,name='',cities=[],desc="",days=0):   
-    day0="INSERT INTO itinerary (id,length,title,description,go,region,day,city_id)"+\
+def write_to_sql_item(id=0,go=2,region=0,name='',cities=[],desc="",days=0,hp=0):   
+    day0="INSERT INTO itinerary (id,length,title,description,go,region,day,city_id,hp)"+\
               " VALUES ('"+str(id)+"','"+str(days)+"', '"+\
-              name+"', '"+desc+"', '"+str(go)+"', '"+str(region)+"', '"+'0'+"', '"+str(cities[-1])+"')"
-    print str(id)+"','"+str(days)+"', '"+\
-              name+"', '"+desc+"', '"+str(go)+"', '"+str(region)+"', '"+'0'+"', '"+str(cities[-1])
+              name+"', '"+desc+"', '"+str(go)+"', '"+str(region)+"', '"+'0'+"', '"+str(cities[-1])+"', '"+str(hp)+"')"
+    print id
     c.execute(day0)
     for d in xrange(1,days+1):
         c.execute("INSERT INTO itinerary (id,day,city_id)"+

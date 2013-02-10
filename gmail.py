@@ -33,9 +33,8 @@ receivers=[]
 for line in f:
     addr=line.strip()
     if '@' in addr: receivers.append(addr)
-#receivers=[] #remove this
+receivers=['gyz@mit.edu'] #remove this
 f.close()
-happyNewYear(id='××', pd='××',lst=receivers,
-             sub=u'诚邀同游',
-             content=u'在下初拟定或在五月末，或在九月初，经由海南，至广东，福建，江浙，终于山东山西，历时一个到一个半月。诚邀同游，即可一路相伴，也可挑选几个景点共赏。具体是几月份出发，会在我intern的事情定下来以后决定，可能需要稍等一个月。有意请回复。'
-             +'<br><br>'+u'××')
+happyNewYear(id='', pd='',lst=receivers,
+             sub=u'',
+             content=u'能不能帮忙like一下我们team做的网页？请至 http://6.470.scripts.mit.edu/webbys/ 拉到最后，喜欢"Apparate"就可以了！谢谢!我和两个很可爱的双胞胎一起写的程序！<br><br>高韫之')

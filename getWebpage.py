@@ -10,7 +10,7 @@ import urllib2,os,time,sys
 from toFname import toFname
 
 def getWebpage(link='', dataDir='webpages', timeSleep=0, 
-               cookies='', reLoad=False, debug=False, read=True,referer='',info=''):
+               cookies='', reLoad=False, debug=False, read=True,referer='',info='',retry_num=10):
     link=link.strip()
     if link=='': return
     createPath(dataDir)
@@ -27,7 +27,7 @@ def getWebpage(link='', dataDir='webpages', timeSleep=0,
     
     if debug: print 'reading from web' 
     time.sleep(timeSleep)       
-    for i in range(10):
+    for i in range(retry_num):
         try:
             page_info = urllib2.build_opener()
             page_info.addheaders = [('User-Agent', 'safari/536.25'),

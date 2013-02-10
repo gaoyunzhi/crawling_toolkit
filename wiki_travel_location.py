@@ -33,7 +33,6 @@ def fetch():
         if city['latitude'] and city['longitude']: continue
         
         address = city["location_name"]+", UK"
-        
         lat, lng = gmaps.address_to_latlng(address)
         if 40<lat<60 and -10<lng<10:
             write_to_sql_item(id,lat,lng)

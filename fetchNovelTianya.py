@@ -1,6 +1,6 @@
 #coding: utf-8
 '''
-fetch novel from tianya yidu
+fetch novel from tianya
 '''
 
 from getWebpage import getWebpage
@@ -8,95 +8,54 @@ try:
     from BeautifulSoup import BeautifulSoup,SoupStrainer
 except:
     from bs4 import BeautifulSoup,SoupStrainer # beta version of bs
-import re
+import re,urllib
 
 def clean(s):
     return s.strip()
-
-def reply(s):
-    m=re.search('--------',s)
-    if m==None: 
-        return False
-    return True
     
-def fetch(head,nid):
-    head+='-'+str(nid)
-    headP=getWebpage(head+'.html')
-    soup=BeautifulSoup(headP.decode('utf8','ignore'))
-    n=soup.find('div',{'class':"pageNum1"})
-    n=n.contents[0]
-    r=re.match(u'共'+'(\d*)'+u'页',n)
-    n=r.group(1)
-    try:
-        n=int(n)
-    except:
-        print 'failed to find the number of page'
-        n=1000
+def fetch(prefix,suffix='.shtml'):
+    prefaceP=getWebpage(prefix+'1'+suffix)
+    prefaceS=BeautifulSoup(prefaceP.decode('utf8','ignore'))
+    book_title=prefaceS.find('title').find(text=True)
+    num_page=prefaceS.find('div',{'class':"atl-pages"}).find('form')['onsubmit']
+    num_page=num_page.split()[-1]
+    num_page=num_page.split(',')[-1]
+    num_page=num_page.split(')')[0]
+    num_page=int(num_page)
+    book_author=prefaceS.find('a',{'replyid':0})['author']
     ans=[]
-    for i in range(1,n+1):
-        page=head+'-'+str(i)+'.html'
-        page=getWebpage(page)
-        soup=BeautifulSoup(page)
-        posts=soup.findAll('li',{'class':'at c h2'})
+    last_author=book_author
+    for page_num in xrange(1,num_page):
+        link=prefix+str(page_num)+suffix
+        page=getWebpage(link)
+        soup=BeautifulSoup(page.decode('utf8','ignore'))
+        posts=soup.findAll('div',{'class':"atl-item"})
         for post in posts:
+            try:
+                author=post.find('div',{'class':"atl-info"}).find('a',{'target':"_blank"})['uname']
+            except:
+                author=''
+            if author==last_author and author!='': 
+                author=''
+            else:
+                last_author=author
+            try:
+                post=post.find('div',{'class':"bbs-content"})  
+            except:
+                pass 
             post='\n'.join(map(clean,post.findAll(text=True)))
-            if len(post)<10: continue
-            if reply(post): continue
+            if len(post)<30: continue
+            if author!='': post=u'作者：'+author+'\n'+post
+            post.replace('\n\n','\n')
+            post.replace('\n\n','\n')
             ans.append(post)
-    g=open(str(nid)+'.txt','w')
-    g.write('\n'.join(ans))
+    g=open(book_title+'.txt','w')
+    g.write('\n\n'.join(ans))
     g.close()
-    
-    return
-   
-
-    
-    
-    return
-    chapters=extractLinks(link=link, requireLinkStart=link,avoidKeys=['img','alt','src'],requireLinkEnd='.html')
-    print chapters
-    content=getWebpage(link)
-    soup=BeautifulSoup(content)
-    paras=soup.findAll('div',{'class':'paragraph'})
-    intro=soup.find('div',{'class':'bookintro'})
-    book_name=soup.find('div',{'id':'book-cover'}).find('a')['title']
-    print 'collecting: ',book_name
-    f=open(book_name+'.txt','w')
-    f.write('intro: ')
-    for y in intro.findAll(text=True):
-        if y.encode('utf8','ignore').strip()=='': continue
-        f.write(y.encode('utf8','ignore')+'\n')
-    for x in paras:
-        for y in x.findAll(text=True):
-            f.write(y.encode('utf8','ignore')+'\n')
-    f.close()
-    start=int(chapters[0]['href'][len(link):-5])
-    end=int(chapters[-1]['href'][len(link):-5])+20
-    chapterD={}
-    for x in chapters:
-        num=int(x['href'][len(link):-5])
-        title=x['title']
-        chapterD[num]=title
-    count=0
-    for i in range(start,end):
-        chapter=link+str(i)+'.html'
-        content=getWebpage(chapter)
-        soup=BeautifulSoup(content)
-        content=soup.find('div',{'id':'zoom'}) 
-        f=open(book_name+'.txt','a')
-        if i in chapterD:
-            f.write('\n\n'+chapterD[i].encode('utf8','ignore')+'\n')
-        if content==None: continue
-        for y in content.findAll(text=True):
-            if y.encode('utf8','ignore').strip()=='': continue
-            f.write(y.encode('utf8','ignore')+'\n')
-        f.close()
-        #if count>5:break
-        count+=1
-        
+ 
         
 def test():
-    fetch(head='http://www.tianyayidu.com/article-a',nid=684989)
+    fetch(prefix='http://bbs.tianya.cn/post-no05-120045-',suffix='.shtml')
     
 if __name__=='__main__':
     test()

@@ -18,22 +18,33 @@ def clean_t(s):
             s=s[:p]+s[q+2:]        
     return s
 def fetch():
-    res=c.execute("SELECT * FROM `location` LIMIT 30")
+    website='http://en.wikipedia.org/wiki/' # 'http://wikitravel.org/en/'#
+    res=c.execute("SELECT * FROM `location`")
     n=res
     print n
     cities=c.fetchall()
     for city in cities:
         if city["complete_descrip"].strip()!="": continue      
         name=city["location_name"]
+        name=name.replace(' ','_')
+        name=name.replace('-','_')
+        if name=='Gloucester': name='Gloucester_(England)'
         if name.strip()=="": continue
-        page=getWebpage('http://wikitravel.org/en/'+name)
+        name=name.lower()
+        print website+name
+        try:
+            page=getWebpage(website+name,retry_num=2)
+        except:
+            print name
+            continue
+        if not page: continue
         soup=BeautifulSoup(page)
         paras=[]
         for x in soup.findAll('p'):        
             paras.append(''.join(map(clean_t,x.findAll(text=True))))
             paras=map(clean,paras)
         paras=[x for x in paras if x!='']
-        paras.append('</a href="'+'http://wikitravel.org/en/'+name+'">From wiki travel<a>')
+        paras.append('</a href="'+website+name+'">From wikipedia<a>')
         article='\n'.join(paras)
         article=article.decode('ascii','ignore') 
         article=MySQLdb.escape_string(article)
