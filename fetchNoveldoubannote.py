@@ -53,7 +53,7 @@ def fetch(head):
         
         
 def test():
-    fetch(head='http://www.douban.com/people/zhangjiawei/notes')
+    fetch(head='http://www.douban.com/people/dalateheshuo/notes')
     
 if __name__=='__main__':
     test()
