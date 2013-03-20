@@ -4,6 +4,6 @@ try:
 except:
     from bs4 import BeautifulSoup,SoupStrainer # beta version of bs
 
-def getSoup(url,encode='utf8'):
-    page=getWebpage(url)
-    return BeautifulSoup(page.decode(encode))
+def getSoup(url,encode='utf8',coo=''):
+    page=getWebpage(url,cookies=coo)
+    return BeautifulSoup(page.decode(encode,'ignore'))

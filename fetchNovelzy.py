@@ -45,7 +45,7 @@ def fetch(head):
     g.close()
         
 def test():
-    fetch(head='http://www.zybook.net/html/31/31605/')
+    fetch(head='http://www.zybook.net/html/30/30510/')
     
 if __name__=='__main__':
     test()

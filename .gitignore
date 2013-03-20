@@ -166,3 +166,5 @@ pip-log.txt
 webpages/
 email*.txt
 *.txt
+*.jpg
+

@@ -15,11 +15,17 @@ def clean(s):
         q=s.find('】')
         if p<q and q-p<40:
             s=s[:p]+s[q+1:] 
-    if len(s)<3: return ''       
+    if len(s)<3: return '' 
+    s=s.strip()
+    s=s.strip('\n')    
+    s=s.strip('\r')
+    s=s.strip('\n')    
+    s=s.strip('\r')
     return s.strip()
 
 def soupToTxt(soup,title=''):
-    content=title+'\n'+'\n'.join(map(clean,soup.findAll(text=True)))
+    if title!='': title='\r\n\r\n'+'-'*30+'\r\n'+title+'\r\n'
+    content=title+'\r\n'.join(map(clean,soup.findAll(text=True)))
     return content
     
     

@@ -67,6 +67,8 @@ def fetchInfo(homeUrl,type=None):
         else:
             album_name=album_name.split('-')[0]
     album_name=album_name.split()[0]
+    album_name=album_name.replace("*",'')
+    if album_name=='("▔□▔)/': album_name='smile'
     start=0
     
     
@@ -114,8 +116,12 @@ def fetchAlbum((album_name,info),caption=False,type=None):
         cap_content=name
         name=name.replace('/','')
         name=' '.join(name.split())
-        name=name.replace(' ','_')      
-        name=combinePath(album_name,str(i)+'_'+name)+'.jpg'     
+        name=name.replace(' ','_')   
+        if name!='':
+            fname=str(i)+'_'+name  
+        else:
+            fname=str(i)
+        name=combinePath(album_name,fname)+'.jpg'     
         try:
             urllib.urlretrieve(url,name)
         except:
@@ -157,6 +163,6 @@ def fetch(homeUrl,caption):
 
     
 if __name__=='__main__':
-    for x in ['http://www.douban.com/photos/album/86966793/','']+sys.argv[1:]:
+    for x in ['http://www.douban.com/photos/album/78134063/','']+sys.argv[1:]:
         if not x: continue
         fetch(x,caption=False)

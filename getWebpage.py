@@ -10,7 +10,8 @@ import urllib2,os,time,sys
 from toFname import toFname
 
 def getWebpage(link='', dataDir='webpages', timeSleep=0, 
-               cookies='', reLoad=False, debug=False, read=True,referer='',info='',retry_num=10):
+               cookies='', reLoad=False, debug=False, read=True,referer='',
+               info='',retry_num=10):
     link=link.strip()
     if link=='': return
     createPath(dataDir)

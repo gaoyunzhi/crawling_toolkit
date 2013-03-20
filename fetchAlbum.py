@@ -1,19 +1,21 @@
 #coding: utf-8
-import urllib,os
-from sysPath import createPath,combinePath
-from PIL import Image, ImageDraw, ImageFont,ImageOps
-def fetchAlbum((album_name,info),caption=False,type=None):    
-    createPath(album_name)
+import urllib,os,re
+def filename(s):
+    return re.sub(r"[\/\\\:\*\?\"\<\>\|]", "",s)   
+    
+def fetchAlbum((album_name,info),type=None,numbering=False):   
+    album_name=filename(album_name).strip().split()[0] 
+    if not os.path.exists(album_name):
+        os.makedirs(album_name)
     i=0
     for name,url in info:
         i+=1
-        ind=name.find('（')
-        if ind>1: name=name[:ind]
-        cap_content=name
-        name=name.replace('/','')
-        name=' '.join(name.split())
-        name=name.replace(' ','_')        
-        name=combinePath(album_name,str(i)+'_'+name)+'.jpg'        
+        name=filename(name) 
+        if not name: 
+            name=str(i) 
+        elif numbering:
+            name=str(i)+'_'+name 
+        name=os.path.join(album_name,name)+'.jpg'        
         try:
             urllib.urlretrieve(url,name)
         except:
@@ -25,12 +27,3 @@ def fetchAlbum((album_name,info),caption=False,type=None):
             if type=='renren':
                 url=url.replace('original','large')
             urllib.urlretrieve(url,name)
-        if caption:
-            im = Image.open(name)
-            w,h = im.size
-            new_im = Image.new("RGB", (w,h+24))
-            new_im.paste(im,(0,0))                
-            f=ImageFont.truetype('C:\Windows\Fonts\simsun.ttc',24)   
-            d = ImageDraw.Draw(new_im)
-            d.text((4,h), cap_content,font=f,fill="white")
-            new_im.save(name)

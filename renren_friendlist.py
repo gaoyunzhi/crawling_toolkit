@@ -6,7 +6,7 @@ import re
 import json,time
 from sysPath import createFile
 
-coo='anonymid=h9489u7u-yp0fqs; _r01_=1; l4pager=1; depovince=GW; __utma=151146938.281202775.1355493087.1355493087.1355581819.2; __utmz=151146938.1355581819.2.2.utmcsr=renren.com|utmccn=(referral)|utmcmd=referral|utmcct=/pages/autoLogin-ads.jsp; _de=3F3126DBF672F298F26CBA88523C3AB26DEBB8C2103DE356; jebecookies=f4c58476-61b0-4d1b-9841-8539844085e8|||||; p=c003d894128f49993145f4e49afb76c41; ap=269496411; JSESSIONID=abc9ahqrKm-dYgIaZFFUt; t=49a74cd11e44ffe25866742204c284cb1; societyguester=49a74cd11e44ffe25866742204c284cb1; id=269496411; xnsid=6080bc05; loginfrom=null; feedType=269496411_hot; vip=1'
+coo='anonymid=h9489u7u-yp0fqs; _r01_=1; mop_uniq_ckid=10.7.18.77_1355594994_642928755; _de=3F3126DBF672F298F26CBA88523C3AB26DEBB8C2103DE356; __utma=151146938.1762808405.1361533510.1361533510.1361533510.1; __utmz=151146938.1361533510.1.1.utmcsr=google|utmccn=(organic)|utmcmd=organic|utmctr=(not%20provided); l4pager=0; depovince=GW; jebecookies=abb5a061-adf7-4276-9913-0059ed1553e6|||||; p=c506abb8c6dd441921166c4464e116341; ap=269496411; t=351ac721dd34d54a08268e46db838a211; societyguester=351ac721dd34d54a08268e46db838a211; id=269496411; xnsid=cacc7bc0; XNESSESSIONID=376bb17a6b26; at=1; loginfrom=null'
 headpage=getWebpage(link='http://friend.renren.com/myfriendlistx.do',
                     cookies=coo)
 r=re.search('var friends=(\[.*\]);',headpage)
