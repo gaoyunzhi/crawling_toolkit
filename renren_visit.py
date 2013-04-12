@@ -9,8 +9,9 @@ except:
 import re
 import json,time
 from sysPath import createFile
+import sys
 
-coo='anonymid=h9489u7u-yp0fqs; _r01_=1; mop_uniq_ckid=10.7.18.77_1355594994_642928755; _de=3F3126DBF672F298F26CBA88523C3AB26DEBB8C2103DE356; __utma=151146938.1762808405.1361533510.1361533510.1361533510.1; __utmz=151146938.1361533510.1.1.utmcsr=google|utmccn=(organic)|utmcmd=organic|utmctr=(not%20provided); l4pager=0; depovince=GW; jebecookies=abb5a061-adf7-4276-9913-0059ed1553e6|||||; p=c506abb8c6dd441921166c4464e116341; ap=269496411; t=351ac721dd34d54a08268e46db838a211; societyguester=351ac721dd34d54a08268e46db838a211; id=269496411; xnsid=cacc7bc0; XNESSESSIONID=376bb17a6b26; at=1; loginfrom=null'
+coo='''anonymid=h9489u7u-yp0fqs; _r01_=1; mop_uniq_ckid=10.7.18.77_1355594994_642928755; __utma=10481322.145044192.1363634540.1363634540.1363636668.2; __utmz=10481322.1363636668.2.2.utmcsr=renren.com|utmccn=(referral)|utmcmd=referral|utmcct=/269496411; _de=3F3126DBF672F298F26CBA88523C3AB26DEBB8C2103DE356; depovince=GW; bt_new=12; jebecookies=63880745-b57f-4dce-b75e-7cc2218be89a|||||; p=9babffa88c9c71f7219d11a49178460d1; ap=269496411; t=fa5d5d911dc472ebde86481e5486062e1; societyguester=fa5d5d911dc472ebde86481e5486062e1; id=269496411; xnsid=6ef4dee; loginfrom=null; feedType=269496411_hot; JSESSIONID=abcMqcp8dHsTAh3nle53t; l4pager=0'''
 headpage=getWebpage(link='http://friend.renren.com/myfriendlistx.do',
                     cookies=coo)
 r=re.search('var friends=(\[.*\]);',headpage)
@@ -20,30 +21,16 @@ ids=[]
 for f in jf:
     ids.append(f['id'])
 
-timeSleep=1
-for id in ids[:]:
+if len(sys.argv)>=2:
+    start_num=int(sys.argv[1])
+else:
+    start_num=0
+
+timeSleep=0.8
+for id in ids[start_num:start_num+100]:
     page=getWebpage('http://www.renren.com/'+str(id)+
                     '/profile',
                     cookies=coo,
                     referer='http://www.renren.com/'+str(id)+'/profile#pdetails',
-               timeSleep=timeSleep)
-    soup=BeautifulSoup(page)
-    name=soup.find("title").find(text=True)
-    try:
-        name=name.split()[2]
-    except:
-        print name
-        print '!!! strange name !!!'
-        print 'http://www.renren.com/'+str(id)+'/profile#pdetails'
-    
-    for x in soup.findAll('a'):
-        if not x.has_key("onclick"): continue
-        if not  x['onclick'].startswith("showShareFriends"): continue
-        num=x.find(text=True)
-        num=num.strip("(")
-        num=num.strip(")")
-        if num.isdigit(): 
-            num=int(num)     
-            break
-    if num<10: print name, 'http://www.renren.com/'+str(id)+'/profile#pdetails'
-    
+               timeSleep=timeSleep,read=False)
+   

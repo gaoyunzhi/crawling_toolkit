@@ -3,12 +3,8 @@
 fetch novel from website
 '''
 
-from getWebpage import getWebpage
-try:
-    from BeautifulSoup import BeautifulSoup,SoupStrainer
-except:
-    from bs4 import BeautifulSoup,SoupStrainer # beta version of bs
-import re
+from getSoup import getSoup
+import re,sys
 
 def clean(s):
     if '{' in s:
@@ -24,15 +20,14 @@ def clean(s):
     return s.strip()
     
 def fetch(head):
-    headP=getWebpage(head)
-    soup=BeautifulSoup(headP.decode('utf8','ignore'))
+    soup=getSoup(head)
     t=soup.find('h1')
     title=t.find(text=True)
+    print title
     ans=[]
     for i in xrange(0,10000,10):
         link=head+'?start='+str(i)
-        page=getWebpage(link)
-        soup=BeautifulSoup(page)
+        soup=getSoup(link)
         notes=[]
         for x in soup.findAll('span',{'class':'rec'}):
             if not x.has_key('id') : continue
@@ -40,8 +35,7 @@ def fetch(head):
             notes.append(x['id'][5:])
         if notes==[]: break
         for note in notes:
-            page=getWebpage('http://www.douban.com/note/'+note)
-            soup=BeautifulSoup(page)
+            soup=getSoup('http://www.douban.com/note/'+note)
             note_title=soup.find('title').find(text=True)
             article=soup.find('div',{'class':"note", 'id':"link-report"})
             content=note_title+'\n'.join(map(clean,article.findAll(text=True)))+'\n\n'
@@ -52,8 +46,7 @@ def fetch(head):
     g.close()
         
         
-def test():
-    fetch(head='http://www.douban.com/people/dalateheshuo/notes')
+for x in sys.argv[1:]+['http://www.douban.com/people/3703176/notes']:
+    if not x: continue
+    fetch(head=x)
     
-if __name__=='__main__':
-    test()
